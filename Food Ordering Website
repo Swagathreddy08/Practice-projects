@@ -1,0 +1,85 @@
+🍔 1. Food Ordering Website (Front End using HTML & CSS only)
+🧾 index.html
+html
+Copy
+Edit
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Food Ordering</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Delicious Foods</h1>
+  </header>
+
+  <section class="menu">
+    <div class="card">
+      <h2>Pizza Margherita</h2>
+      <p>$12.99</p>
+      <button>Order Now</button>
+    </div>
+    <div class="card">
+      <h2>Veggie Burger</h2>
+      <p>$9.99</p>
+      <button>Order Now</button>
+    </div>
+    <div class="card">
+      <h2>Sushi Combo</h2>
+      <p>$18.50</p>
+      <button>Order Now</button>
+    </div>
+  </section>
+</body>
+</html>
+🎨 styles.css
+css
+Copy
+Edit
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #fdfdfd;
+}
+
+header {
+  background-color: #ff6347;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 40px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
+  width: 200px;
+}
+
+.card button {
+  background-color: #ff6347;
+  color: white;
+  padding: 10px;
+  border: none;
+  margin-top: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.card button:hover {
+  background-color: #e5533d;
+}
