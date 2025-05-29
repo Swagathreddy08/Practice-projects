@@ -1,0 +1,125 @@
+This chatbot uses:
+
+NLTK for natural language preprocessing
+
+Scikit-learn for intent classification with logistic regression
+
+JSON to define chatbot intents and responses
+
+🧠 Step-by-Step: Chatbot Using ML
+1. ✅ Install Required Packages
+bash
+Copy
+Edit
+pip install nltk scikit-learn
+2. 📁 intents.json
+Create a file called intents.json:
+
+json
+Copy
+Edit
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": ["Hi", "Hello", "Hey", "Good morning", "Good evening"],
+      "responses": ["Hello!", "Hi there!", "Greetings!"]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": ["Bye", "See you later", "Goodbye", "Take care"],
+      "responses": ["Goodbye!", "See you!", "Take care!"]
+    },
+    {
+      "tag": "thanks",
+      "patterns": ["Thanks", "Thank you", "Much appreciated", "Thx"],
+      "responses": ["You're welcome!", "No problem!", "Glad to help!"]
+    },
+    {
+      "tag": "noanswer",
+      "patterns": [],
+      "responses": ["Sorry, I didn't understand that.", "Can you please rephrase?"]
+    }
+  ]
+}
+3. 🧾 chatbot.py
+python
+Copy
+Edit
+import json
+import random
+import nltk
+import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.linear_model import LogisticRegression
+from nltk.stem import PorterStemmer
+
+nltk.download('punkt')
+
+# Load intents
+with open("intents.json") as file:
+    data = json.load(file)
+
+stemmer = PorterStemmer()
+
+# Preprocessing
+all_patterns = []
+all_tags = []
+
+for intent in data["intents"]:
+    for pattern in intent["patterns"]:
+        tokens = nltk.word_tokenize(pattern.lower())
+        stemmed = [stemmer.stem(word) for word in tokens]
+        sentence = " ".join(stemmed)
+        all_patterns.append(sentence)
+        all_tags.append(intent["tag"])
+
+# Vectorize
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(all_patterns)
+y = np.array(all_tags)
+
+# Train model
+model = LogisticRegression()
+model.fit(X, y)
+
+# Inference
+def preprocess_input(text):
+    tokens = nltk.word_tokenize(text.lower())
+    stemmed = [stemmer.stem(word) for word in tokens]
+    return " ".join(stemmed)
+
+def get_response(user_input):
+    preprocessed = preprocess_input(user_input)
+    vec = vectorizer.transform([preprocessed])
+    pred = model.predict(vec)[0]
+
+    for intent in data["intents"]:
+        if intent["tag"] == pred:
+            return random.choice(intent["responses"])
+    return random.choice([r for i in data["intents"] if i["tag"] == "noanswer" for r in i["responses"]])
+
+# Chat loop
+print("Chatbot: Hello! Type 'quit' to exit.")
+while True:
+    msg = input("You: ")
+    if msg.lower() == "quit":
+        print("Chatbot: Goodbye!")
+        break
+    response = get_response(msg)
+    print("Chatbot:", response)
+🧪 Example Conversation
+vbnet
+Copy
+Edit
+You: Hi
+Chatbot: Hi there!
+
+You: Thanks
+Chatbot: You're welcome!
+
+You: What is the time?
+Chatbot: Sorry, I didn't understand that.
+
+You: Bye
+Chatbot: Take care!
