@@ -1,0 +1,44 @@
+2. Stock Prediction Using AI (Python + scikit-learn)
+Here's a basic example using linear regression:
+
+📄 stock_predictor.py
+python
+Copy
+Edit
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+
+# Dummy historical stock price data
+data = {
+    "day": [1, 2, 3, 4, 5, 6, 7],
+    "price": [100, 102, 101, 105, 107, 110, 115]
+}
+df = pd.DataFrame(data)
+
+# Features and labels
+X = df[["day"]]
+y = df["price"]
+
+# Train the model
+model = LinearRegression()
+model.fit(X, y)
+
+# Predict future prices
+future_days = np.array([[8], [9], [10]])
+predicted_prices = model.predict(future_days)
+
+# Output predictions
+for day, price in zip(future_days.flatten(), predicted_prices):
+    print(f"Day {day}: Predicted Price = ${price:.2f}")
+
+# Plot
+plt.scatter(X, y, color='blue', label='Historical Prices')
+plt.plot(X, model.predict(X), color='green', label='Trend Line')
+plt.plot(future_days, predicted_prices, 'ro--', label='Predicted')
+plt.xlabel("Day")
+plt.ylabel("Price")
+plt.title("Stock Price Prediction")
+plt.legend()
+plt.show()
