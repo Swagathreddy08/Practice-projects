@@ -3,16 +3,15 @@ import sys
 def clasify(a):
     if a==0:
         return "HEALTHY"
-    elif a == 1:
+    elif a >= 1 and a<=4:
         return "WARNING"
-    else:
+    elif a>=5:
         return "CRITICAL" 
 
 def basic_stats(logs):    
     errorline=warningline=infoline=count=0
     print("the basic format ")
     words=logs.split()
-    lenth=len(logs)
     lines=logs.splitlines()
     for line in lines:
         if "error" in line:
@@ -26,7 +25,7 @@ def basic_stats(logs):
     print("Basic Statistics")
     print("************************************")
     print(f'''
-      The total character in the ord are : {lenth}
+      The total character in the ord are : {len(logs)}
       Total logs    :   {count}
       INFO          :   {infoline}
       WARNING       :   {warningline}
@@ -34,12 +33,11 @@ def basic_stats(logs):
       \n''')
     print(" WORDS IN THE LOG ARE :\n")
     print(set(words))
-
+    
 def service_stats(logs):
     words=logs.split()
     wo1=payment=auth=order=inventory=notification=0
     for word in words:
-        wo1+=1
         if "payment-service" in word:
             payment+=1
         elif "auth-service" in word:
@@ -50,7 +48,9 @@ def service_stats(logs):
             inventory+=1
         elif "notification-service" in word:
             notification+=1
+    notification+payment+auth+order+inventory
     print(f'''
+     total words           :  {len(words)}
      payment-service       :  {payment}
      auth-service          :  {auth}
      order-service         :  {order}
@@ -159,108 +159,87 @@ notification-service  : {clasify(e5)}
 ''')
 
 def critical(logs):
+    p=[]
+    a=[]
+    o=[]
+    i=[]
+    n=[]
+    isc=esc=wsc=pscore=ascore=oscore=iscore=nscore=0
     lines=logs.splitlines()
-    i=w=e=score=0
     for line in lines:
         if "payment-service" in line:
-            if "info" in line:
-                i+=1
-            elif "warning" in line:
-                w+=1
-            elif "error" in line:
-                e+=1
-            score=(1*0)+(w*1)+(e*2)
-            if score>6:
-                print("Payment-service status : CRITICAL")
-                score=0
-            elif score>=1:
-                print("Payment-service : WARNING")
-                score=0
-            else:
-                print("Payment-service : Healthy")
-                score=0
-        if "auth-service" in line:
-            if "info" in line:
-                i+=1
-            elif "warning" in line:
-                w+=1
-            elif "error" in line:
-                e+=1
-            score=(1*0)+(w*1)+(e*2)
-            if score>=6:
-                print("Auth-service status : CRITICAL")
-                score=0
-            elif score>=1:
-                print("Auth-service : WARNING")
-                score=0
-            else:
-                print("Auth-service : Healthy")
-                score=0
-        if "order-service" in line:
-                    if "info" in line:
-                        i+=1
-                    elif "warning" in line:
-                        w+=1
-                    elif "error" in line:
-                        e+=1
-                    score=(1*0)+(w*1)+(e*2)
-                    if score>6:
-                        print("order-service status : CRITICAL")
-                        score=0
-                    elif score>=1:
-                        print("order-service : WARNING")
-                        score=0
-                    else:
-                        print("Order-service : Healthy")
-                        score=0
-        if "inventory-service" in line:
-                    if "info" in line:
-                        i+=1
-                    elif "warning" in line:
-                        w+=1
-                    elif "error" in line:
-                        e+=1
-                    score=(1*0)+(w*1)+(e*2)
-                    if score>6:
-                        print("inventory-service status : CRITICAL")
-                        score=0
-                    elif score>=1:
-                        print("Inventory-service : WARNING")
-                        score=0
-                    else:
-                        print("Inventory-service : Healthy")
-                        score=0
-        if "notification-service" in line:
-                    if "info" in line:
-                        i+=1
-                    elif "warning" in line:
-                        w+=1
-                    elif "error" in line:
-                        e+=1
-                    score=(1*0)+(w*1)+(e*2)
-                    if score>6:
-                        print("notification-service status : CRITICAL") 
-                        score=0
-                    elif score>=1:
-                        print(" Notification-service : WARNING")
-                        score=0
-                    else:
-                        print("Notification-service : Healthy")
-                        score=0       
-lo = """
+            p.append(line) 
+        elif 'auth-service' in line:
+            a.append(line)
+        elif 'order-service' in line:
+            o.append(line) 
+        elif 'inventory-service' in line:
+            i.append(line)
+        elif 'notification-service' in line:
+            n.append(line)
+    for p1 in p:
+        if 'info' in p1:
+            isc+=1
+        elif 'error' in p1:
+            esc+=1
+        elif 'warning' in p1:
+            wsc+=1
+    pscore=(isc*0)+(esc*2)+(wsc*1)
+    print(f"payment-service :  {clasify(pscore)}")
+    isc=esc=wsc=0
+    for a1 in a:
+        if 'info' in a1:
+            isc+=1
+        elif 'error' in a1:
+            esc+=1
+        elif 'warning' in a1:
+            wsc+=1
+    ascore=(isc*0)+(esc*2)+(wsc*1)
+    print(f"auth-service :  {clasify(ascore)}")
+    isc=esc=wsc=0
+    for o1 in o:
+        if 'info' in o1:
+            isc+=1
+        elif 'error' in o1:
+            esc+=1
+        elif 'warning' in o1:
+            wsc+=1
+    oscore=(isc*0)+(esc*2)+(wsc*1)
+    print(f'order-service :  {clasify(oscore)}')
+    isc=esc=wsc=0
+    for i1 in i:
+        if 'info' in i1:
+            isc+=1
+        elif 'error' in i1:
+            esc+=1
+        elif 'warning' in i1:
+            wsc+=1
+    iscore=(isc*0)+(esc*2)+(wsc*1)
+    print(f'inventory-service : {clasify(iscore)}')
+    isc=esc=wsc=0
+    for n1 in n:
+        if 'info' in n1:
+            isc+=1
+        elif 'error' in n1:
+            esc+=1
+        elif 'warning' in n1:
+            wsc+=1
+    nscore=(isc*0)+(esc*2)+(wsc*1)
+    print(f' notification-service : {clasify(nscore)}')
+    isc=esc=wsc=0   
+
+print("after filling use cltl+z and then press ENTER")
+logs = logs = """
 2026-09-10 09:00:01 payment-service INFO Payment request received
 2026-09-10 09:00:02 payment-service INFO Payment validated
 2026-09-10 09:00:03 payment-service ERROR Payment gateway timeout
 2026-09-10 09:00:04 auth-service INFO User authentication successful
-2026-09-10 09:00:05 order-service error Order processing delayed
+2026-09-10 09:00:05 order-service WARNING Order processing delayed
 2026-09-10 09:00:06 payment-service ERROR Payment retry failed
 2026-09-10 09:00:07 inventory-service INFO Stock updated
 2026-09-10 09:00:08 notification-service ERROR Email delivery failed
-2026-09-10 09:00:09 order-service error Order completed
+2026-09-10 09:00:09 order-service INFO Order completed
 """.lower()
-print("the basic structure of filling logs is \n",lo)
-print("after filling use cltl+z and then press ENTER")
-logs = sys.stdin.read().lower()
 print('''========================================
      PRODUCTION INCIDENT ANALYZER
 ========================================
@@ -272,20 +251,23 @@ print('''========================================
 5. Show service health
 6. Show critical incidents
 7. Exit''')
-choice=int(input("enter your chice"))
 while True:
+    choice=input("enter your chice ")
     match choice:
         case 1:
-            print(basic_stats(logs))
+            basic_stats(logs)
         case 2:
-            print(service_stats(logs))
+            service_stats(logs)
         case 3:
-            print(error_logs(logs))
+            error_logs(logs)
         case 4:
             print("still in development")
         case 5:
-            print(service_health(logs))
+            service_health(logs)
         case 6:
-            print(critical(logs))
+            critical(logs)
         case 7:
             break
+        case _:  # Default case if no other patterns match
+            print("wrong input")
+
